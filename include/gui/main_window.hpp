@@ -22,12 +22,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include <iostream>
+#ifndef MAIN_WINDOW_HPP
+#define MAIN_WINDOW_HPP
 
-#include "app.hpp"
+#include <gtkmm.h>
 
-int main(int argc, char *argv[]) {
-	auto application = open_tcg::App::create();
-
-	return application->run(argc, argv);
+namespace open_tcg {
+	namespace gui {
+		class MainWindow : public Gtk::ApplicationWindow {
+			public:
+				MainWindow();
+		};
+	}
 }
+
+#endif

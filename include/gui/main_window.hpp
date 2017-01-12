@@ -31,7 +31,24 @@ namespace open_tcg {
 	namespace gui {
 		class MainWindow : public Gtk::ApplicationWindow {
 			public:
-				MainWindow();
+				static MainWindow *create();
+				MainWindow(BaseObjectType *cobject,
+					const Glib::RefPtr<Gtk::Builder> &refBuilder);
+
+			protected:
+				// setup functions
+				void initControls();
+				void connectEvents();
+
+				// event handlers
+				void onPlayButtonClicked();
+				void onDeckEditButtonClicked();
+				void onViewProfileButtonClicked();
+
+				Gtk::Button *playButton;
+				Gtk::Button *deckEditButton;
+				Gtk::Button *viewProfileButton;
+				Glib::RefPtr<Gtk::Builder> builder;
 		};
 	}
 }

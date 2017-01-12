@@ -24,8 +24,74 @@ SOFTWARE.
 
 #include "gui/main_window.hpp"
 
+#include <iostream>
+#include <stdexcept>
+
 using namespace open_tcg::gui;
 
-MainWindow::MainWindow() 
-	: Gtk::ApplicationWindow() {
+MainWindow::MainWindow(BaseObjectType *cobject,
+	const Glib::RefPtr<Gtk::Builder> &refBuilder) 
+	: Gtk::ApplicationWindow(cobject),
+	builder(refBuilder) {
+
+	initControls();
+	connectEvents();
+}
+
+void MainWindow::initControls() {
+	builder->get_widget("play_button", playButton);
+	if (!playButton) {
+		throw std::runtime_error("Couldn't add play button.");
+	}
+
+	builder->get_widget("deck_edit_button", deckEditButton);
+	if (!deckEditButton) {
+		throw std::runtime_error("Couldn't add deck edit button.");
+	}
+
+	builder->get_widget("view_profile_button", viewProfileButton);
+	if (!viewProfileButton) {
+		throw std::runtime_error("Couldn't add view profile button.");
+	}
+}
+
+void MainWindow::connectEvents() {
+	playButton->signal_clicked().connect(sigc::mem_fun(*this,
+		&MainWindow::onPlayButtonClicked));
+
+	deckEditButton->signal_clicked().connect(sigc::mem_fun(*this,
+		&MainWindow::onDeckEditButtonClicked));
+
+	viewProfileButton->signal_clicked().connect(sigc::mem_fun(*this,
+		&MainWindow::onViewProfileButtonClicked));
+}
+
+MainWindow *MainWindow::create() {
+	// TODO: figure out resource based approach
+	auto refBuilder = Gtk::Builder::create_from_file("main_window.glade");
+
+	MainWindow *window = nullptr;
+
+	refBuilder->get_widget_derived("window", window);
+
+	if (!window) {
+		throw std::runtime_error("No window in main_window.glade");
+	}
+
+	
+
+	return window;
+}
+
+// TODO: add actual event handlers for these
+void MainWindow::onPlayButtonClicked() {
+	std::cout << "Play button clicked" << std::endl;
+}
+
+void MainWindow::onDeckEditButtonClicked() {
+	std::cout << "Deck edit button clicked" << std::endl;
+}
+
+void MainWindow::onViewProfileButtonClicked() {
+	std::cout << "View profile button clicked" << std::endl;
 }

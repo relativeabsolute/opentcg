@@ -1,6 +1,9 @@
 #include "app.hpp"
 #include "gui/main_window.hpp"
 
+#include <iostream>
+#include <exception>
+
 using namespace open_tcg;
 using namespace open_tcg::gui;
 
@@ -14,7 +17,7 @@ Glib::RefPtr<App> App::create() {
 }
 
 MainWindow *App::create_window() {
-	auto window = new MainWindow();
+	auto window = MainWindow::create();
 
 	add_window(*window);
 
@@ -25,9 +28,14 @@ MainWindow *App::create_window() {
 }
 
 void App::on_activate() {
+	try {
 	auto window = create_window();
 
 	window->present();
+	}
+	catch (const std::exception &ex) {
+		std::cerr << "App::on_activate(): " << ex.what() << std::endl;
+	}
 }
 
 void App::on_hide_window(Gtk::Window *window) {

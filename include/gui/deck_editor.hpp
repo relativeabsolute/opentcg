@@ -22,28 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef OPENTCG_APP_HPP
-#define OPENTCG_APP_HPP
+#ifndef DECK_EDITOR_HPP
+#define DECK_EDITOR_HPP
 
 #include <gtkmm.h>
 
 namespace open_tcg {
 	namespace gui {
-		class MainWindow;
+		class DeckEditor : public Gtk::Window {
+			public:
+				DeckEditor(BaseObjectType *cobject,
+					const Glib::RefPtr<Gtk::Builder> &refBuilder);
+
+				static DeckEditor *create();
+			protected:
+				Glib::RefPtr<Gtk::Builder> builder;
+
+				void initControls();
+				void connectEvents();
+		};
 	}
-
-	class App : public Gtk::Application {
-		public:
-			static Glib::RefPtr<App> create();
-
-		protected:
-			App();
-
-			gui::MainWindow *create_window();
-
-			void on_activate() override;
-			void on_hide_window(Gtk::Window *window);
-	};
 }
 
 #endif

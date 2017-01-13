@@ -22,28 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef OPENTCG_APP_HPP
-#define OPENTCG_APP_HPP
+#include "gui/deck_editor.hpp"
 
-#include <gtkmm.h>
+#include <stdexcept>
 
-namespace open_tcg {
-	namespace gui {
-		class MainWindow;
-	}
+using namespace open_tcg::gui;
 
-	class App : public Gtk::Application {
-		public:
-			static Glib::RefPtr<App> create();
-
-		protected:
-			App();
-
-			gui::MainWindow *create_window();
-
-			void on_activate() override;
-			void on_hide_window(Gtk::Window *window);
-	};
+DeckEditor::DeckEditor(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder)
+	: Gtk::Window(cobject), builder(refBuilder) {
+	
+	initControls();
+	connectEvents();
 }
 
-#endif
+DeckEditor *DeckEditor::create() {
+	auto refBuilder = Gtk::Builder::create_from_file("deck_editor.glade");
+
+	DeckEditor *editor = nullptr;
+
+	refBuilder->get_widget_derived("window", editor);
+
+	if (!editor) {
+		throw std::runtime_error("No window in deck_editor.glade");
+	}
+
+	return editor;
+}
+
+void DeckEditor::initControls() {
+
+}
+
+void DeckEditor::connectEvents() {
+
+}

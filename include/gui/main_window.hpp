@@ -29,11 +29,15 @@ SOFTWARE.
 
 namespace open_tcg {
 	namespace gui {
+		class DeckEditor;
+
 		class MainWindow : public Gtk::ApplicationWindow {
 			public:
 				static MainWindow *create();
 				MainWindow(BaseObjectType *cobject,
 					const Glib::RefPtr<Gtk::Builder> &refBuilder);
+
+				virtual ~MainWindow();
 
 			protected:
 				// setup functions
@@ -49,6 +53,8 @@ namespace open_tcg {
 				Gtk::Button *deckEditButton;
 				Gtk::Button *viewProfileButton;
 				Glib::RefPtr<Gtk::Builder> builder;
+
+				DeckEditor *deckEditor;
 		};
 	}
 }

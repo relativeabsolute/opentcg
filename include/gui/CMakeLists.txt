@@ -1,1 +1,5 @@
-add_executable(OpenTCG main_window.hpp)
+set (HEADERS
+	${HEADERS}
+	${CMAKE_CURRENT_SOURCE_DIR}/main_window.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/deck_editor.hpp
+	PARENT_SCOPE)

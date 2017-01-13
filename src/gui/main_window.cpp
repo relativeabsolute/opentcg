@@ -23,6 +23,7 @@ SOFTWARE.
 */
 
 #include "gui/main_window.hpp"
+#include "gui/deck_editor.hpp"
 
 #include <iostream>
 #include <stdexcept>
@@ -32,10 +33,18 @@ using namespace open_tcg::gui;
 MainWindow::MainWindow(BaseObjectType *cobject,
 	const Glib::RefPtr<Gtk::Builder> &refBuilder) 
 	: Gtk::ApplicationWindow(cobject),
-	builder(refBuilder) {
+	builder(refBuilder), playButton(nullptr),
+	deckEditButton(nullptr), viewProfileButton(nullptr),
+	deckEditor(nullptr) {
 
 	initControls();
 	connectEvents();
+}
+
+MainWindow::~MainWindow() {
+	if (deckEditor) {
+		delete deckEditor;
+	}
 }
 
 void MainWindow::initControls() {
@@ -53,6 +62,8 @@ void MainWindow::initControls() {
 	if (!viewProfileButton) {
 		throw std::runtime_error("Couldn't add view profile button.");
 	}
+
+	deckEditor = DeckEditor::create();
 }
 
 void MainWindow::connectEvents() {
@@ -78,8 +89,6 @@ MainWindow *MainWindow::create() {
 		throw std::runtime_error("No window in main_window.glade");
 	}
 
-	
-
 	return window;
 }
 
@@ -89,7 +98,7 @@ void MainWindow::onPlayButtonClicked() {
 }
 
 void MainWindow::onDeckEditButtonClicked() {
-	std::cout << "Deck edit button clicked" << std::endl;
+	deckEditor->show_all();
 }
 
 void MainWindow::onViewProfileButtonClicked() {

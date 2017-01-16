@@ -25,7 +25,7 @@ SOFTWARE.
 #ifndef MAIN_WINDOW_HPP
 #define MAIN_WINDOW_HPP
 
-#include <gtkmm.h>
+#include "opentcg.hpp"
 
 namespace open_tcg {
 	namespace gui {

@@ -22,29 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef DECK_EDITOR_HPP
-#define DECK_EDITOR_HPP
+#ifndef CARD_SEARCH_HPP
+#define CARD_SEARCH_HPP
 
 #include "opentcg.hpp"
 
 namespace open_tcg {
 	namespace gui {
-		class CardSearch;
-
-		class DeckEditor : public Gtk::Window {
+		class CardSearch : public Gtk::Frame {
 			public:
-				DeckEditor(BaseObjectType *cobject,
-					const Glib::RefPtr<Gtk::Builder> &refBuilder);
+				CardSearch(BaseObjectType *cobject,
+						const Glib::RefPtr<Gtk::Builder> &refBuilder);
 
-				static DeckEditor *create();
+				static CardSearch *create();
+
 			protected:
 				Glib::RefPtr<Gtk::Builder> builder;
 
 				void initControls();
 				void connectEvents();
 
-				Gtk::Box *editorBox;
-				CardSearch *cardSearch;
+				void onUpdateClicked();
+				void onClearClicked();
+
+				Gtk::SearchEntry *cardNameSearch;
+				Gtk::SearchEntry *cardTextSearch;
+				Gtk::Button *updateButton;
+				Gtk::Button *clearButton;
 		};
 	}
 }

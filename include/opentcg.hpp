@@ -25,6 +25,10 @@ SOFTWARE.
 #ifndef OPENTCG_HPP
 #define OPENTCG_HPP
 
+#include <iostream>
+#include <stdexcept>
+#include <gtkmm.h>
+
 namespace open_tcg {
 	typedef unsigned int uint;
 }

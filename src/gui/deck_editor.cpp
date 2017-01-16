@@ -23,13 +23,12 @@ SOFTWARE.
 */
 
 #include "gui/deck_editor.hpp"
-
-#include <stdexcept>
+#include "gui/card_search.hpp"
 
 using namespace open_tcg::gui;
 
 DeckEditor::DeckEditor(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder)
-	: Gtk::Window(cobject), builder(refBuilder) {
+	: Gtk::Window(cobject), builder(refBuilder), editorBox(nullptr) {
 	
 	initControls();
 	connectEvents();
@@ -50,7 +49,13 @@ DeckEditor *DeckEditor::create() {
 }
 
 void DeckEditor::initControls() {
+	builder->get_widget("editor_box", editorBox);
+	if (!editorBox) {
+		throw std::runtime_error("No editor_box in deck_editor.glade");
+	}
 
+	cardSearch = CardSearch::create();
+	editorBox->pack_end(*cardSearch, false, false);
 }
 
 void DeckEditor::connectEvents() {

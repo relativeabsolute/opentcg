@@ -25,9 +25,6 @@ SOFTWARE.
 #include "gui/main_window.hpp"
 #include "gui/deck_editor.hpp"
 
-#include <iostream>
-#include <stdexcept>
-
 using namespace open_tcg::gui;
 
 MainWindow::MainWindow(BaseObjectType *cobject,

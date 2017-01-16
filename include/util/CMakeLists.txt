@@ -1,0 +1,4 @@
+SET (HEADERS
+	${HEADERS}
+	${CMAKE_CURRENT_SOURCE_DIR}/image_manager.hpp
+	PARENT_SCOPE)

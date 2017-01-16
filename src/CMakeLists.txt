@@ -8,6 +8,7 @@ link_directories(${GTKMM_LIBRARY_DIRS})
 
 add_definitions(${GTKMM_CFLAGS_OTHER})
 
+add_subdirectory(util)
 add_subdirectory(gui)
 
 add_executable(OpenTCG ${SOURCE} ${HEADERS})

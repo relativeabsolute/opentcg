@@ -22,39 +22,37 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef CARD_SEARCH_HPP
-#define CARD_SEARCH_HPP
-
 #include "opentcg.hpp"
 
+#include <string>
+#include <map>
+
 namespace open_tcg {
-	namespace gui {
-		class CardView;
+	namespace util {
+		const uint DEFAULT_SMALL_SCALE = 100;
+		const uint DEFAULT_LARGE_SCALE = 250;
 
-		class CardSearch : public Gtk::Frame {
+		struct ImageScale {
+			Glib::RefPtr<Gdk::Pixbuf> small;
+			Glib::RefPtr<Gdk::Pixbuf> large;
+		};
+
+		class ImageManager {
 			public:
-				CardSearch(BaseObjectType *cobject,
-						const Glib::RefPtr<Gtk::Builder> &refBuilder);
+				ImageManager();
 
-				static CardSearch *create();
+				void setSmallScale(uint newScale);
+				uint getSmallScale() const;
 
-			protected:
-				Glib::RefPtr<Gtk::Builder> builder;
+				void setLargeScale(uint newScale);
+				uint getLargeScale() const;
 
-				void initControls();
-				void connectEvents();
-
-				void onUpdateClicked();
-				void onClearClicked();
-
-				Gtk::SearchEntry *cardNameSearch;
-				Gtk::SearchEntry *cardTextSearch;
-				Gtk::Button *updateButton;
-				Gtk::Button *clearButton;
-				Gtk::Box *searchItemsBox;
-				CardView *cardView;
+				ImageScale getImage(const std::string &name) const;
+				void loadImage(const std::string &setCode);
+			private:
+				std::map<std::string, ImageScale> images;
+				uint smallScale;
+				uint largeScale;
 		};
 	}
 }
-
-#endif

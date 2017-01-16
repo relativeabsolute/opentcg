@@ -4,3 +4,4 @@ set (HEADERS
 	)
 
 add_subdirectory(gui)
+add_subdirectory(util)

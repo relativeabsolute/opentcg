@@ -1,4 +1,5 @@
 #include "gui/card_search.hpp"
+#include "gui/card_view.hpp"
 
 using namespace open_tcg::gui;
 
@@ -44,6 +45,14 @@ void CardSearch::initControls() {
 	if (!clearButton) {
 		throw std::runtime_error("No clear_button in card_search.glade");
 	}
+
+	builder->get_widget("search_items_box", searchItemsBox);
+	if (!searchItemsBox) {
+		throw std::runtime_error("No search_items_box in card_search.glade");
+	}
+
+	cardView = CardView::create();
+	searchItemsBox->pack_start(*cardView, false, false);
 }
 
 void CardSearch::connectEvents() {

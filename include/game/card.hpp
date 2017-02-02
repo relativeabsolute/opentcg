@@ -30,6 +30,13 @@ SOFTWARE.
 
 namespace open_tcg {
 	namespace game {
+		class CardType {
+			public:
+				std::string getName() const;
+			private:
+				std::string name;
+		};
+
 		class CardInfo {
 			public:
 				std::string getName() const;

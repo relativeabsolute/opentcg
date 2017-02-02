@@ -22,43 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef TCG_HPP
-#define TCG_HPP
-
-#include "opentcg.hpp"
-#include <string>
-#include <vector>
-#include <map>
-
-#include "game/deck.hpp"
+#include "game/tcg.hpp"
 #include "game/card.hpp"
+#include "game/deck.hpp"
 
-namespace open_tcg {
-	namespace game {
-		typedef std::vector<DeckSectionInfo> DeckSections;
-		typedef std::map<std::string, CardInfo> CardMap;
-		typedef std::map<std::string, CardType> CardTypesMap;
+#include <libxml++/libxml++.h>
 
-		class TCG {
-			public:
-				std::string getName() const;
-				uint getCardLimit() const;
+using namespace open_tcg::game;
 
-				static TCG *readFromFile(const std::string &fileName);
-			private:
-				std::string name;
-
-				// represents the amount of copies of a card with
-				// the same name that can be played in one deck
-				uint cardLimit;
-
-				DeckSections sections;
-
-				CardMap cards;
-
-				CardTypesMap cardTypes;
-		};
-	}
+std::string TCG::getName() const {
+	return name;
 }
 
-#endif
+uint TCG::getCardLimit() const {
+	return cardLimit;
+}
+
+TCG *TCG::readFromFile(const std::string &fileName) {
+	TCG *result = new TCG();
+
+	xmlpp::DomParser parser;
+	parser.parse_file(fileName);
+	if (parser) {
+		const auto root = parser.get_document()->get_root_node();
+		if (root->get_name().compare("TCG") == 0) {
+			std::cout << "File is good" << std::endl;
+		}
+	}
+
+	return result;
+}

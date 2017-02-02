@@ -24,8 +24,10 @@ SOFTWARE.
 
 #include "gui/main_window.hpp"
 #include "gui/deck_editor.hpp"
+#include "game/tcg.hpp"
 
 using namespace open_tcg::gui;
+using namespace open_tcg::game;
 
 MainWindow::MainWindow(BaseObjectType *cobject,
 	const Glib::RefPtr<Gtk::Builder> &refBuilder) 
@@ -85,6 +87,8 @@ MainWindow *MainWindow::create() {
 	if (!window) {
 		throw std::runtime_error("No window in main_window.glade");
 	}
+
+	TCG *ex = TCG::readFromFile("example.xml");
 
 	return window;
 }

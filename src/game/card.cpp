@@ -24,9 +24,11 @@ SOFTWARE.
 
 #include "game/card.hpp"
 
-// TODO: add game stuff CMakeLists.txt
-
 using namespace open_tcg::game;
+
+std::string CardType::getName() const {
+	return name;
+}
 
 std::string CardInfo::getName() const {
 	return name;

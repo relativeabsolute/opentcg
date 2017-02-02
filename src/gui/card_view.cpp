@@ -66,7 +66,7 @@ void CardView::connectEvents() {
 		for (uint j = 0; j < cols; j++) {
 			uint index = i * cols + j;
 			boxes[i]->signal_motion_notify_event().connect(
-					sigc::bind<uint>(sigc::mem_fun(*this, &CardView::onCardHover)), index);
+					sigc::bind<uint>(sigc::mem_fun(*this, &CardView::onCardHover), index));
 		}
 	}
 }

@@ -1,0 +1,63 @@
+<TCG>
+	<Name>
+		Yugioh
+	</Name>
+	<TypeDirectory>
+		cardtypes
+	</TypeDirectory>
+	<SetFile>
+		setnames.txt
+	</SetFile>
+	<CardLimit>
+		3
+	</CardLimit>
+	<Deck>
+		<Subsection>
+			<Name>
+				Main Deck
+			</Name>
+			<Group>
+				1
+			</Group>
+			<MinSize>40
+			</MinSize>
+			<MaxSize>60
+			</MaxSize>
+			<Rows>6
+			</Rows>
+			<Columns>10
+			</Columns>
+		</Subsection>
+		<Subsection>
+			<Name>
+				Side Deck
+			</Name>
+			<Group>
+				1
+			</Group>
+			<MinSize>0
+			</MinSize>
+			<MaxSize>15
+			</MaxSize>
+			<Rows>1
+			</Rows>
+			<Columns>15
+			</Columns>
+		</Subsection>
+		<Subsection>
+			<Name>
+				Extra Deck
+			</Name>
+			<Group>
+				2
+			</Group>
+			<MinSize>0
+			</MinSize>
+			<MaxSize>15
+			</MaxSize>
+			<Rows>1</Rows>
+			<Columns>15</Columns>
+		</Subsection>
+	</Deck>
+</TCG>
+	

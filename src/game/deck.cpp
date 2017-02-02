@@ -22,43 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef TCG_HPP
-#define TCG_HPP
-
-#include "opentcg.hpp"
-#include <string>
-#include <vector>
-#include <map>
-
 #include "game/deck.hpp"
-#include "game/card.hpp"
 
-namespace open_tcg {
-	namespace game {
-		typedef std::vector<DeckSectionInfo> DeckSections;
-		typedef std::map<std::string, CardInfo> CardMap;
-		typedef std::map<std::string, CardType> CardTypesMap;
+using namespace open_tcg::game;
 
-		class TCG {
-			public:
-				std::string getName() const;
-				uint getCardLimit() const;
-
-				static TCG *readFromFile(const std::string &fileName);
-			private:
-				std::string name;
-
-				// represents the amount of copies of a card with
-				// the same name that can be played in one deck
-				uint cardLimit;
-
-				DeckSections sections;
-
-				CardMap cards;
-
-				CardTypesMap cardTypes;
-		};
-	}
+std::string DeckSectionInfo::getName() const {
+	return name;
 }
-
-#endif

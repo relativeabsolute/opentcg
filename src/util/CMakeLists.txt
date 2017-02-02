@@ -1,4 +1,5 @@
 set (SOURCE
 	${SOURCE}
 	${CMAKE_CURRENT_SOURCE_DIR}/image_manager.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/xml.cpp
 	PARENT_SCOPE)

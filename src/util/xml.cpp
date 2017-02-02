@@ -22,50 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "game/tcg.hpp"
-#include "game/card.hpp"
-#include "game/deck.hpp"
 #include "util/xml.hpp"
-
-#include <libxml++/libxml++.h>
 #include <boost/algorithm/string.hpp>
 
-using namespace open_tcg::game;
-using namespace open_tcg::util;
+std::string open_tcg::util::getTextFromElement(const xmlpp::Node *node) {
+	std::string result;
+	const auto content = node->get_first_child();
+	const auto text = dynamic_cast<const xmlpp::TextNode*>(content);
 
-std::string TCG::getName() const {
-	return name;
-}
-
-uint TCG::getCardLimit() const {
-	return cardLimit;
-}
-
-TCG *TCG::readFromFile(const std::string &fileName) {
-	TCG *result = new TCG();
-
-	const std::string rootStr = "TCG";
-	const std::string nameStr = "Name";
-
-	xmlpp::DomParser parser;
-	parser.parse_file(fileName);
-	if (parser) {
-		const auto root = parser.get_document()->get_root_node();
-		if (root->get_name().compare(rootStr) == 0) {
-			const auto name = root->get_first_child(nameStr);
-			result->name = getTextFromElement(name);
-			/*
-			const auto nameContent = name->get_first_child();
-			const auto nameText = dynamic_cast<const xmlpp::TextNode*>(nameContent);
-			if (nameText) {
-				std::string nameValue = nameText->get_content();
-				boost::trim(nameValue);
-				result->name = nameValue;
-			}
-			*/
-			
-		}
+	if (text) {
+		result = text->get_content();
+		boost::trim(result);
 	}
-
 	return result;
 }

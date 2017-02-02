@@ -66,11 +66,15 @@ void CardView::connectEvents() {
 		for (uint j = 0; j < cols; j++) {
 			uint index = i * cols + j;
 			boxes[i]->signal_motion_notify_event().connect(
-				sigc::mem_fun(*this, &CardView::onCardHover));
+					sigc::bind<uint>(sigc::mem_fun(*this, &CardView::onCardHover)), index);
 		}
 	}
 }
 
-bool CardView::onCardHover(GdkEventMotion *motionEvent) {
+// TODO: set up drag and drop
+
+bool CardView::onCardHover(GdkEventMotion *motionEvent, uint index) {
+	// TODO: set up card display to change to the card being hovered over
+
 	return false;	
 }

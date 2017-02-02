@@ -41,7 +41,7 @@ namespace open_tcg {
 				void initControls();
 				void connectEvents();
 
-				bool onCardHover(GdkEventMotion *motionEvent);
+				bool onCardHover(GdkEventMotion *motionEvent, uint index);
 				
 				Gtk::Grid grid;
 				std::vector<Gtk::EventBox *> boxes;

@@ -43,6 +43,8 @@ namespace open_tcg {
 				std::string getSetName() const;
 				std::string getSetCode() const;
 				std::string getText() const;
+
+				static CardInfo readFromFile(const std::string &fileName);
 			private:
 				std::string name;
 				std::string setName;

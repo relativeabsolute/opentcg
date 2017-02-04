@@ -24,6 +24,8 @@ SOFTWARE.
 
 #include "util/xml.hpp"
 #include <boost/algorithm/string.hpp>
+#include <boost/lexical_cast.hpp>
+#include <limits>
 
 std::string open_tcg::util::getTextFromElement(const xmlpp::Node *node) {
 	std::string result;
@@ -33,6 +35,17 @@ std::string open_tcg::util::getTextFromElement(const xmlpp::Node *node) {
 	if (text) {
 		result = text->get_content();
 		boost::trim(result);
+	}
+	return result;
+}
+
+uint open_tcg::util::getUintFromElement(const xmlpp::Node *node) {
+	std::string str = getTextFromElement(node);
+	uint result = 0;
+	try {
+		result = boost::lexical_cast<uint>(str);
+	} catch (const boost::bad_lexical_cast &) {
+		result = std::numeric_limits<uint>::max();
 	}
 	return result;
 }

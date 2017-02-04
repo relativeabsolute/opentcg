@@ -23,11 +23,43 @@ SOFTWARE.
 */
 
 #include "game/card.hpp"
+#include "util/xml.hpp"
+
+#include <libxml++/libxml++.h>
 
 using namespace open_tcg::game;
+using namespace open_tcg::util;
 
 std::string CardType::getName() const {
 	return name;
+}
+
+CardInfo CardInfo::readFromFile(const std::string &fileName) {
+	CardInfo result;
+
+	const std::string rootStr = "Card";
+	const std::string nameStr = "Name";
+	const std::string setCodeStr = "SetCode";
+	const std::string setNameStr = "SetName";
+	const std::string textStr = "CardText";
+
+	xmlpp::DomParser parser;
+	parser.parse_file(fileName);
+	if (parser) {
+		const auto root = parser.get_document()->get_root_node();
+		if (root->get_name().compare(rootStr) == 0) {
+			const auto name = root->get_first_child(nameStr);
+			result.name = getTextFromElement(name);
+			const auto setCode = root->get_first_child(setCodeStr);
+			result.setCode = getTextFromElement(setCode);
+			const auto setName = root->get_first_child(setNameStr);
+			result.setName = getTextFromElement(setName);
+			const auto textEl = root->get_first_child(textStr);
+			result.text = getTextFromElement(textEl);
+		}
+	}
+
+	return result;
 }
 
 std::string CardInfo::getName() const {

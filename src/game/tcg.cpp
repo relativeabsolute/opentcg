@@ -29,9 +29,12 @@ SOFTWARE.
 
 #include <libxml++/libxml++.h>
 #include <boost/algorithm/string.hpp>
+#include <boost/filesystem.hpp>
 
 using namespace open_tcg::game;
 using namespace open_tcg::util;
+
+namespace fs = boost::filesystem;
 
 std::string TCG::getName() const {
 	return name;
@@ -41,11 +44,13 @@ uint TCG::getCardLimit() const {
 	return cardLimit;
 }
 
-TCG *TCG::readFromFile(const std::string &fileName) {
-	TCG *result = new TCG();
+TCG TCG::readFromFile(const std::string &fileName) {
+	TCG result;
 
 	const std::string rootStr = "TCG";
 	const std::string nameStr = "Name";
+	const std::string cardLimitStr = "CardLimit";
+	const std::string setsStr = "SetFile";
 
 	xmlpp::DomParser parser;
 	parser.parse_file(fileName);
@@ -53,19 +58,33 @@ TCG *TCG::readFromFile(const std::string &fileName) {
 		const auto root = parser.get_document()->get_root_node();
 		if (root->get_name().compare(rootStr) == 0) {
 			const auto name = root->get_first_child(nameStr);
-			result->name = getTextFromElement(name);
-			/*
-			const auto nameContent = name->get_first_child();
-			const auto nameText = dynamic_cast<const xmlpp::TextNode*>(nameContent);
-			if (nameText) {
-				std::string nameValue = nameText->get_content();
-				boost::trim(nameValue);
-				result->name = nameValue;
-			}
-			*/
-			
+			result.name = getTextFromElement(name);
+			const auto cardLimit = root->get_first_child(cardLimitStr);
+			result.cardLimit = getUintFromElement(cardLimit);
+			const auto setsName = root->get_first_child(setsStr);
+			std::string setsFile = getTextFromElement(setsName);
+			result.readSetFile(setsFile);
 		}
 	}
 
 	return result;
+}
+
+void TCG::readSetFile(const std::string &setFile) {
+	std::ifstream fileIn(setFile);
+	std::string line;
+	while (std::getline(fileIn, line)) {
+		readSet(line);
+	}
+}
+
+void TCG::readSet(const std::string &setName) {
+	fs::path setDir(setName);
+	if (fs::is_directory(setDir)) {
+		for (fs::directory_entry &entry : fs::directory_iterator(setDir)) {
+			CardInfo info = CardInfo::readFromFile(entry.path().string());
+			std::cout << "Card name: " << info.getName() << std::endl;
+			cards.insert(std::make_pair(info.getName(), info));
+		}
+	}
 }

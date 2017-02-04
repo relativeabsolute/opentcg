@@ -88,7 +88,8 @@ MainWindow *MainWindow::create() {
 		throw std::runtime_error("No window in main_window.glade");
 	}
 
-	TCG *ex = TCG::readFromFile("example.xml");
+	TCG ex(TCG::readFromFile("example.xml"));
+	std::cout << ex.getName() << std::endl;
 
 	return window;
 }

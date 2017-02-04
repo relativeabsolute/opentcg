@@ -44,8 +44,11 @@ namespace open_tcg {
 				std::string getName() const;
 				uint getCardLimit() const;
 
-				static TCG *readFromFile(const std::string &fileName);
+				static TCG readFromFile(const std::string &fileName);
 			private:
+				void readSetFile(const std::string &setFile);
+				void readSet(const std::string &setName);
+
 				std::string name;
 
 				// represents the amount of copies of a card with

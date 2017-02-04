@@ -27,5 +27,6 @@ SOFTWARE.
 namespace open_tcg {
 	namespace util {
 		std::string getTextFromElement(const xmlpp::Node *node);
+		uint getUintFromElement(const xmlpp::Node *node);
 	}
 }

@@ -34,6 +34,31 @@ std::string CardType::getName() const {
 	return name;
 }
 
+CardType CardType::readFromFile(const std::string &fileName) {
+	CardType result;
+
+	const std::string rootStr = "CardType";
+	const std::string nameStr = "Name";
+	const std::string paramsStr = "Parameters";
+
+	xmlpp::DomParser parser;
+	parser.parse_file(fileName);
+	if (parser) {
+		const auto root = parser.get_document()->get_root_node();
+		if (root->get_name().compare(rootStr) == 0) {
+			const auto name = root->get_first_child(nameStr);
+			result.name = getTextFromElement(name);
+
+			const auto paramElements = root->get_first_child(paramsStr);
+			for (const auto &paramChild : paramElements->get_children()) {
+				result.paramNames.push_back(getTextFromElement(paramChild));
+			}
+		}
+	}
+
+	return result;
+}
+
 CardInfo CardInfo::readFromFile(const std::string &fileName) {
 	CardInfo result;
 

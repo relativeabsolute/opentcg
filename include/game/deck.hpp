@@ -32,9 +32,22 @@ namespace open_tcg {
 	namespace game {
 		class DeckSectionInfo {
 			public:
+				void setName(const std::string &newName);
 				std::string getName() const;
+
+				void setGroup(uint newGroup);
+				uint getGroup() const;
+
+				void setMinSize(uint newSize);
+				uint getMinSize() const;
+
+				void setMaxSize(uint newSize);
+				uint getMaxSize() const;
 			private:
 				std::string name;
+				uint group;
+				uint maxSize;
+				uint minSize;
 		};
 	}
 }

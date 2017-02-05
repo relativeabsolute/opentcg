@@ -32,6 +32,7 @@ SOFTWARE.
 
 #include "game/deck.hpp"
 #include "game/card.hpp"
+#include <libxml++/libxml++.h>
 
 namespace open_tcg {
 	namespace game {
@@ -46,8 +47,10 @@ namespace open_tcg {
 
 				static TCG readFromFile(const std::string &fileName);
 			private:
+				void readDeck(const xmlpp::Node *deckElement);
 				void readSetFile(const std::string &setFile);
 				void readSet(const std::string &setName);
+				void readDeckSubsection(const xmlpp::Node *sectionElement);
 
 				std::string name;
 

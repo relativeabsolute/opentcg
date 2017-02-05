@@ -29,3 +29,31 @@ using namespace open_tcg::game;
 std::string DeckSectionInfo::getName() const {
 	return name;
 }
+
+void DeckSectionInfo::setName(const std::string &newName) {
+	name = newName;
+}
+
+uint DeckSectionInfo::getGroup() const {
+	return group;
+}
+
+void DeckSectionInfo::setGroup(uint newGroup) {
+	group = newGroup;
+}
+
+uint DeckSectionInfo::getMinSize() const {
+	return minSize;
+}
+
+void DeckSectionInfo::setMinSize(uint newSize) {
+	minSize = newSize;
+}
+
+uint DeckSectionInfo::getMaxSize() const {
+	return maxSize;
+}
+
+void DeckSectionInfo::setMaxSize(uint newSize) {
+	maxSize = newSize;
+}

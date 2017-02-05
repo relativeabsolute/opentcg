@@ -27,14 +27,18 @@ SOFTWARE.
 
 #include "opentcg.hpp"
 #include <string>
+#include <vector>
 
 namespace open_tcg {
 	namespace game {
 		class CardType {
 			public:
 				std::string getName() const;
+
+				static CardType readFromFile(const std::string &fileName);
 			private:
 				std::string name;
+				std::vector<std::string> paramNames;
 		};
 
 		class CardInfo {

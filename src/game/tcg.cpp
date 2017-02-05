@@ -51,6 +51,7 @@ TCG TCG::readFromFile(const std::string &fileName) {
 	const std::string nameStr = "Name";
 	const std::string cardLimitStr = "CardLimit";
 	const std::string setsStr = "SetFile";
+	const std::string deckStr = "Deck";
 
 	xmlpp::DomParser parser;
 	parser.parse_file(fileName);
@@ -64,6 +65,8 @@ TCG TCG::readFromFile(const std::string &fileName) {
 			const auto setsName = root->get_first_child(setsStr);
 			std::string setsFile = getTextFromElement(setsName);
 			result.readSetFile(setsFile);
+			const auto deck = root->get_first_child(deckStr);
+			result.readDeck(deck);
 		}
 	}
 
@@ -78,12 +81,41 @@ void TCG::readSetFile(const std::string &setFile) {
 	}
 }
 
+void TCG::readDeck(const xmlpp::Node *deckElement) {
+	const std::string subsectionStr = "Subsection";
+	for (const auto &child : deckElement->get_children(subsectionStr)) {
+		readDeckSubsection(child);
+	}
+}
+
+void TCG::readDeckSubsection(const xmlpp::Node *sectionElement) {
+	DeckSectionInfo result;
+
+	const std::string nameStr = "Name";
+	const std::string groupStr = "Group";
+	const std::string minSizeStr = "MinSize";
+	const std::string maxSizeStr = "MaxSize";
+
+	const auto name = sectionElement->get_first_child(nameStr);
+	result.setName(getTextFromElement(name));
+
+	const auto group = sectionElement->get_first_child(groupStr);
+	result.setGroup(getUintFromElement(group));
+
+	const auto minSize = sectionElement->get_first_child(minSizeStr);
+	result.setMinSize(getUintFromElement(minSize));
+
+	const auto maxSize = sectionElement->get_first_child(maxSizeStr);
+	result.setMaxSize(getUintFromElement(maxSize));
+
+	sections.push_back(result);
+}
+
 void TCG::readSet(const std::string &setName) {
 	fs::path setDir(setName);
 	if (fs::is_directory(setDir)) {
 		for (fs::directory_entry &entry : fs::directory_iterator(setDir)) {
 			CardInfo info = CardInfo::readFromFile(entry.path().string());
-			std::cout << "Card name: " << info.getName() << std::endl;
 			cards.insert(std::make_pair(info.getName(), info));
 		}
 	}

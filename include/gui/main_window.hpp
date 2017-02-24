@@ -26,6 +26,7 @@ SOFTWARE.
 #define MAIN_WINDOW_HPP
 
 #include "opentcg.hpp"
+#include "game/tcg.hpp"
 
 namespace open_tcg {
 	namespace gui {
@@ -39,6 +40,7 @@ namespace open_tcg {
 
 				virtual ~MainWindow();
 
+				void setTCG(const open_tcg::game::TCG &tcg);
 			protected:
 				// setup functions
 				void initControls();
@@ -53,6 +55,7 @@ namespace open_tcg {
 				Gtk::Button *deckEditButton;
 				Gtk::Button *viewProfileButton;
 				Glib::RefPtr<Gtk::Builder> builder;
+				open_tcg::game::TCG currTCG;
 
 				DeckEditor *deckEditor;
 		};

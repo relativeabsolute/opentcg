@@ -26,6 +26,9 @@ SOFTWARE.
 #define DECK_EDITOR_HPP
 
 #include "opentcg.hpp"
+#include "gui/card_view.hpp"
+#include "game/tcg.hpp"
+#include <vector>
 
 namespace open_tcg {
 	namespace gui {
@@ -37,14 +40,22 @@ namespace open_tcg {
 					const Glib::RefPtr<Gtk::Builder> &refBuilder);
 
 				static DeckEditor *create();
+
+				void setTCG(open_tcg::game::TCG *tcg);
 			protected:
 				Glib::RefPtr<Gtk::Builder> builder;
 
 				void initControls();
+				void initDeckViews();
 				void connectEvents();
 
 				Gtk::Box *editorBox;
+				Gtk::Frame *deckView;
 				CardSearch *cardSearch;
+
+				open_tcg::game::TCG *currTCG;
+
+				std::vector<CardView*> cardViews;
 		};
 	}
 }

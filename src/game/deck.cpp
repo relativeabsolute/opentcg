@@ -57,3 +57,19 @@ uint DeckSectionInfo::getMaxSize() const {
 void DeckSectionInfo::setMaxSize(uint newSize) {
 	maxSize = newSize;
 }
+
+uint DeckSectionInfo::getRowCount() const {
+	return rows;
+}
+
+void DeckSectionInfo::setRowCount(uint newCount) {
+	rows = newCount;
+}
+
+uint DeckSectionInfo::getColCount() const {
+	return cols;
+}
+
+void DeckSectionInfo::setColCount(uint newCount) {
+	cols = newCount;
+}

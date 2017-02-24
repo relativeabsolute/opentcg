@@ -95,6 +95,8 @@ void TCG::readDeckSubsection(const xmlpp::Node *sectionElement) {
 	const std::string groupStr = "Group";
 	const std::string minSizeStr = "MinSize";
 	const std::string maxSizeStr = "MaxSize";
+	const std::string rowStr = "Rows";
+	const std::string colStr = "Columns";
 
 	const auto name = sectionElement->get_first_child(nameStr);
 	result.setName(getTextFromElement(name));
@@ -108,7 +110,17 @@ void TCG::readDeckSubsection(const xmlpp::Node *sectionElement) {
 	const auto maxSize = sectionElement->get_first_child(maxSizeStr);
 	result.setMaxSize(getUintFromElement(maxSize));
 
+	const auto rows = sectionElement->get_first_child(rowStr);
+	result.setRowCount(getUintFromElement(rows));
+
+	const auto cols = sectionElement->get_first_child(colStr);
+	result.setColCount(getUintFromElement(cols));
+
 	sections.push_back(result);
+}
+
+DeckSections TCG::getSections() const {
+	return sections;
 }
 
 void TCG::readSet(const std::string &setName) {

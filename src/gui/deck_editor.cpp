@@ -26,6 +26,7 @@ SOFTWARE.
 #include "gui/card_search.hpp"
 
 using namespace open_tcg::gui;
+using namespace open_tcg::game;
 
 DeckEditor::DeckEditor(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder)
 	: Gtk::Window(cobject), builder(refBuilder), editorBox(nullptr) {
@@ -54,8 +55,31 @@ void DeckEditor::initControls() {
 		throw std::runtime_error("No editor_box in deck_editor.glade");
 	}
 
+	deckView = new Gtk::Frame("Deck");
+	initDeckViews();
+
 	cardSearch = CardSearch::create();
 	editorBox->pack_end(*cardSearch, false, false);
+}
+
+void DeckEditor::initDeckViews() {
+	Gtk::Box *viewsBox = new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 10);
+
+	for (DeckSectionInfo info : currTCG->getSections()) {
+		Gtk::Frame *sectionFrame = new Gtk::Frame(info.getName());
+
+		CardView *sectionView = CardView::create(info.getRowCount(), info.getColCount());
+		sectionFrame->add(*sectionView);
+
+		viewsBox->pack_start(*sectionFrame, false, false);
+		cardViews.push_back(sectionView);
+	}
+
+	deckView->add(*viewsBox);
+}
+
+void DeckEditor::setTCG(TCG *tcg) {
+	currTCG = tcg;
 }
 
 void DeckEditor::connectEvents() {

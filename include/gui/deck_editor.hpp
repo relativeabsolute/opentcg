@@ -37,11 +37,11 @@ namespace open_tcg {
 		class DeckEditor : public Gtk::Window {
 			public:
 				DeckEditor(BaseObjectType *cobject,
-					const Glib::RefPtr<Gtk::Builder> &refBuilder);
+					const Glib::RefPtr<Gtk::Builder> &refBuilder,
+					open_tcg::game::TCG *tcg);
 
-				static DeckEditor *create();
+				static DeckEditor *create(open_tcg::game::TCG *tcg);
 
-				void setTCG(open_tcg::game::TCG *tcg);
 			protected:
 				Glib::RefPtr<Gtk::Builder> builder;
 

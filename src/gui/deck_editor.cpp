@@ -28,19 +28,18 @@ SOFTWARE.
 using namespace open_tcg::gui;
 using namespace open_tcg::game;
 
-DeckEditor::DeckEditor(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder)
-	: Gtk::Window(cobject), builder(refBuilder), editorBox(nullptr) {
-	
-	initControls();
-	connectEvents();
-}
+DeckEditor::DeckEditor(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder, TCG *currTCG)
+	: Gtk::Window(cobject), builder(refBuilder), editorBox(nullptr), currTCG(currTCG) {
+		initControls();
+		connectEvents();
+	}
 
-DeckEditor *DeckEditor::create() {
+DeckEditor *DeckEditor::create(TCG *currTCG) {
 	auto refBuilder = Gtk::Builder::create_from_file("deck_editor.glade");
 
 	DeckEditor *editor = nullptr;
 
-	refBuilder->get_widget_derived("window", editor);
+	refBuilder->get_widget_derived("window", editor, currTCG);
 
 	if (!editor) {
 		throw std::runtime_error("No window in deck_editor.glade");
@@ -63,23 +62,24 @@ void DeckEditor::initControls() {
 }
 
 void DeckEditor::initDeckViews() {
-	Gtk::Box *viewsBox = new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 10);
+	if (currTCG == nullptr) {
+		std::cout << "Current TCG is null." << std::endl;
+		// TODO: throw an exception
+	} else {
+		Gtk::Box *viewsBox = new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 10);
 
-	for (DeckSectionInfo info : currTCG->getSections()) {
-		Gtk::Frame *sectionFrame = new Gtk::Frame(info.getName());
+		for (DeckSectionInfo info : currTCG->getSections()) {
+			Gtk::Frame *sectionFrame = new Gtk::Frame(info.getName());
 
-		CardView *sectionView = CardView::create(info.getRowCount(), info.getColCount());
-		sectionFrame->add(*sectionView);
+			CardView *sectionView = CardView::create(info.getRowCount(), info.getColCount());
+			sectionFrame->add(*sectionView);
 
-		viewsBox->pack_start(*sectionFrame, false, false);
-		cardViews.push_back(sectionView);
+			viewsBox->pack_start(*sectionFrame, false, false);
+			cardViews.push_back(sectionView);
+		}
+
+		deckView->add(*viewsBox);
 	}
-
-	deckView->add(*viewsBox);
-}
-
-void DeckEditor::setTCG(TCG *tcg) {
-	currTCG = tcg;
 }
 
 void DeckEditor::connectEvents() {

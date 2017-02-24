@@ -36,11 +36,10 @@ namespace open_tcg {
 			public:
 				static MainWindow *create();
 				MainWindow(BaseObjectType *cobject,
-					const Glib::RefPtr<Gtk::Builder> &refBuilder);
+					const Glib::RefPtr<Gtk::Builder> &refBuilder,
+					const open_tcg::game::TCG &tcg);
 
 				virtual ~MainWindow();
-
-				void setTCG(const open_tcg::game::TCG &tcg);
 			protected:
 				// setup functions
 				void initControls();

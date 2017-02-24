@@ -30,11 +30,11 @@ using namespace open_tcg::gui;
 using namespace open_tcg::game;
 
 MainWindow::MainWindow(BaseObjectType *cobject,
-	const Glib::RefPtr<Gtk::Builder> &refBuilder) 
+	const Glib::RefPtr<Gtk::Builder> &refBuilder, const TCG &tcg) 
 	: Gtk::ApplicationWindow(cobject),
 	builder(refBuilder), playButton(nullptr),
 	deckEditButton(nullptr), viewProfileButton(nullptr),
-	deckEditor(nullptr) {
+	deckEditor(nullptr), currTCG(tcg) {
 
 	initControls();
 	connectEvents();
@@ -63,7 +63,7 @@ void MainWindow::initControls() {
 		throw std::runtime_error("Couldn't add view profile button.");
 	}
 
-	deckEditor = DeckEditor::create();
+	deckEditor = DeckEditor::create(&currTCG);
 }
 
 void MainWindow::connectEvents() {
@@ -83,23 +83,17 @@ MainWindow *MainWindow::create() {
 
 	MainWindow *window = nullptr;
 
-	refBuilder->get_widget_derived("window", window);
+	// TODO: determine last game set
+	TCG ex(TCG::readFromFile("example.xml"));
+	std::cout << ex.getName() << std::endl;
+
+	refBuilder->get_widget_derived("window", window, ex);
 
 	if (!window) {
 		throw std::runtime_error("No window in main_window.glade");
 	}
 
-	// TODO: determine last game set
-	TCG ex(TCG::readFromFile("example.xml"));
-	std::cout << ex.getName() << std::endl;
-
-	window->deckEditor->setTCG(&window->currTCG);
-
 	return window;
-}
-
-void MainWindow::setTCG(const TCG &tcg) {
-	currTCG = tcg;
 }
 
 // TODO: add actual event handlers for these

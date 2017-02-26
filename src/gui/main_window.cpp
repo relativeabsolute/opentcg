@@ -28,6 +28,7 @@ SOFTWARE.
 
 using namespace open_tcg::gui;
 using namespace open_tcg::game;
+using namespace open_tcg::util;
 
 MainWindow::MainWindow(BaseObjectType *cobject,
 	const Glib::RefPtr<Gtk::Builder> &refBuilder, const TCG &tcg) 
@@ -35,6 +36,8 @@ MainWindow::MainWindow(BaseObjectType *cobject,
 	builder(refBuilder), playButton(nullptr),
 	deckEditButton(nullptr), viewProfileButton(nullptr),
 	deckEditor(nullptr), currTCG(tcg) {
+
+	imageManager = ImageManager::create();
 
 	initControls();
 	connectEvents();
@@ -63,7 +66,7 @@ void MainWindow::initControls() {
 		throw std::runtime_error("Couldn't add view profile button.");
 	}
 
-	deckEditor = DeckEditor::create(&currTCG);
+	deckEditor = DeckEditor::create(&currTCG, imageManager);
 }
 
 void MainWindow::connectEvents() {

@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include "opentcg.hpp"
 #include "game/tcg.hpp"
+#include "util/image_manager.hpp"
 
 namespace open_tcg {
 	namespace gui {
@@ -57,6 +58,7 @@ namespace open_tcg {
 				open_tcg::game::TCG currTCG;
 
 				DeckEditor *deckEditor;
+				open_tcg::util::ImageManager *imageManager;
 		};
 	}
 }

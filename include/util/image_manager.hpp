@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef IMAGE_MANAGER_HPP
+#define IMAGE_MANAGER_HPP
+
 #include "opentcg.hpp"
 
 #include <string>
@@ -49,6 +52,8 @@ namespace open_tcg {
 
 				ImageScale getImage(const std::string &name) const;
 				void loadImage(const std::string &setCode);
+
+				static ImageManager *create();
 			private:
 				std::map<std::string, ImageScale> images;
 				uint smallScale;
@@ -56,3 +61,5 @@ namespace open_tcg {
 		};
 	}
 }
+
+#endif

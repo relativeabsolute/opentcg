@@ -26,6 +26,7 @@ SOFTWARE.
 #define CARD_SEARCH_HPP
 
 #include "opentcg.hpp"
+#include "util/image_manager.hpp"
 
 namespace open_tcg {
 	namespace gui {
@@ -34,9 +35,10 @@ namespace open_tcg {
 		class CardSearch : public Gtk::Frame {
 			public:
 				CardSearch(BaseObjectType *cobject,
-						const Glib::RefPtr<Gtk::Builder> &refBuilder);
+						const Glib::RefPtr<Gtk::Builder> &refBuilder,
+						open_tcg::util::ImageManager *imgMgr);
 
-				static CardSearch *create();
+				static CardSearch *create(open_tcg::util::ImageManager *imgMgr);
 
 			protected:
 				Glib::RefPtr<Gtk::Builder> builder;
@@ -53,6 +55,8 @@ namespace open_tcg {
 				Gtk::Button *clearButton;
 				Gtk::Box *searchItemsBox;
 				CardView *cardView;
+
+				open_tcg::util::ImageManager *imageManager;
 		};
 	}
 }

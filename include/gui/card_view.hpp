@@ -22,20 +22,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+#ifndef CARD_VIEW_HPP
+#define CARD_VIEW_HPP
+
 #include <gtkmm.h>
 
 #include <vector>
 
 #include "opentcg.hpp"
+#include "util/image_manager.hpp"
+#include "game/card.hpp"
 
 namespace open_tcg {
 	namespace gui {
 		class CardView : public Gtk::Frame {
 			public:
-				CardView(uint rowCount, uint colCount);
+				CardView(open_tcg::util::ImageManager *imgMgr,
+					uint rowCount, uint colCount);
 
-				static CardView *create();
-				static CardView *create(uint rowCount, uint colCount);
+				static CardView *create(open_tcg::util::ImageManager *imgMgr);
+				static CardView *create(open_tcg::util::ImageManager *imgMgr,
+					uint rowCount, uint colCount);
+
+				void setCards(const std::vector<open_tcg::game::CardInfo> &cards);
 			protected:
 
 				void initControls();
@@ -48,6 +57,10 @@ namespace open_tcg {
 				std::vector<Gtk::Image *> images;
 
 				uint rows, cols;
+
+				open_tcg::util::ImageManager *imageManager;
 		};
 	}
 }
+
+#endif

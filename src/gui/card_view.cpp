@@ -25,21 +25,23 @@ SOFTWARE.
 #include "gui/card_view.hpp"
 
 using namespace open_tcg::gui;
+using namespace open_tcg::game;
+using namespace open_tcg::util;
 
-CardView::CardView(uint rowCount, uint colCount)
-	: Gtk::Frame(), rows(rowCount), cols(colCount) {
+CardView::CardView(ImageManager *imgMgr, uint rowCount, uint colCount)
+	: Gtk::Frame(), rows(rowCount), cols(colCount), imageManager(imgMgr) {
 	initControls();
 	connectEvents();
 }
 
-CardView *CardView::create() {
+CardView *CardView::create(ImageManager *imgMgr) {
 	uint defaultRows = 5;
 	uint defaultCols = 4;
-	return create(defaultRows, defaultCols);
+	return create(imgMgr, defaultRows, defaultCols);
 }
 
-CardView *CardView::create(uint rowCount, uint colCount) {
-	return new CardView(rowCount, colCount);
+CardView *CardView::create(ImageManager *imgMgr, uint rowCount, uint colCount) {
+	return new CardView(imgMgr, rowCount, colCount);
 }
 
 void CardView::initControls() {
@@ -57,8 +59,17 @@ void CardView::initControls() {
 			box->set_above_child(false);
 			box->add(*images[index]);
 			boxes.push_back(box);
+
+			grid.attach(*box, (int)j, (int)i, 1, 1);
 		}
 	}
+
+	imageManager->loadImage("proxy");
+
+	std::vector<CardInfo> emptyVec;
+	setCards(emptyVec);
+
+	add(grid);
 }
 
 void CardView::connectEvents() {
@@ -77,4 +88,14 @@ bool CardView::onCardHover(GdkEventMotion *motionEvent, uint index) {
 	// TODO: set up card display to change to the card being hovered over
 
 	return false;	
+}
+
+void CardView::setCards(const std::vector<CardInfo> &cards) {
+	size_t numImages = rows * cols;
+	for (size_t i = 0; i < numImages; i++) {
+		if (i < cards.size()) {
+		} else {
+			images[i]->set(imageManager->getImage("proxy").small);
+		}
+	}
 }

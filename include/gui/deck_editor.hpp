@@ -29,6 +29,7 @@ SOFTWARE.
 #include "gui/card_view.hpp"
 #include "game/tcg.hpp"
 #include <vector>
+#include "util/image_manager.hpp"
 
 namespace open_tcg {
 	namespace gui {
@@ -38,9 +39,11 @@ namespace open_tcg {
 			public:
 				DeckEditor(BaseObjectType *cobject,
 					const Glib::RefPtr<Gtk::Builder> &refBuilder,
-					open_tcg::game::TCG *tcg);
+					open_tcg::game::TCG *tcg,
+					open_tcg::util::ImageManager *imgMgr);
 
-				static DeckEditor *create(open_tcg::game::TCG *tcg);
+				static DeckEditor *create(open_tcg::game::TCG *tcg,
+					open_tcg::util::ImageManager *imgMgr);
 
 			protected:
 				Glib::RefPtr<Gtk::Builder> builder;
@@ -54,6 +57,7 @@ namespace open_tcg {
 				CardSearch *cardSearch;
 
 				open_tcg::game::TCG *currTCG;
+				open_tcg::util::ImageManager *imageManager;
 
 				std::vector<CardView*> cardViews;
 		};

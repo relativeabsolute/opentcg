@@ -2,21 +2,23 @@
 #include "gui/card_view.hpp"
 
 using namespace open_tcg::gui;
+using namespace open_tcg::util;
 
-CardSearch::CardSearch(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder)
+CardSearch::CardSearch(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder,
+	ImageManager *imgMgr)
 	: Gtk::Frame(cobject), builder(refBuilder),
 	cardNameSearch(nullptr), cardTextSearch(nullptr), updateButton(nullptr),
-	clearButton(nullptr) {
+	clearButton(nullptr), imageManager(imgMgr) {
 		initControls();
 		connectEvents();
 }
 
-CardSearch *CardSearch::create() {
+CardSearch *CardSearch::create(ImageManager *imgMgr) {
 	auto refBuilder = Gtk::Builder::create_from_file("card_search.glade");
 
 	CardSearch *search = nullptr;
 
-	refBuilder->get_widget_derived("card_search", search);
+	refBuilder->get_widget_derived("card_search", search, imgMgr);
 
 	if (!search) {
 		throw std::runtime_error("No card_search in card_search.glade");
@@ -51,7 +53,7 @@ void CardSearch::initControls() {
 		throw std::runtime_error("No search_items_box in card_search.glade");
 	}
 
-	cardView = CardView::create();
+	cardView = CardView::create(imageManager);
 	searchItemsBox->pack_start(*cardView, false, false);
 }
 

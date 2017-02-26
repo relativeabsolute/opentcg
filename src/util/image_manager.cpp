@@ -62,7 +62,7 @@ ImageScale ImageManager::getImage(const std::string &name) const {
 void ImageManager::loadImage(const std::string &setCode) {
 	auto search = images.find(setCode);
 	if (search == images.end()) {
-		std::string fullName = "images" + setCode + ".png";
+		std::string fullName = "images/" + setCode + ".png";
 		auto small = Gdk::Pixbuf::create_from_file(fullName);
 		if (!small) {
 			throw std::runtime_error("Could not load image from file");
@@ -75,4 +75,8 @@ void ImageManager::loadImage(const std::string &setCode) {
 		images.insert(std::make_pair(setCode, ImageScale{
 					small, large}));
 	}
+}
+
+ImageManager *ImageManager::create() {
+	return new ImageManager();
 }

@@ -27,19 +27,22 @@ SOFTWARE.
 
 using namespace open_tcg::gui;
 using namespace open_tcg::game;
+using namespace open_tcg::util;
 
-DeckEditor::DeckEditor(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder, TCG *currTCG)
-	: Gtk::Window(cobject), builder(refBuilder), editorBox(nullptr), currTCG(currTCG) {
+DeckEditor::DeckEditor(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder,
+	TCG *currTCG, ImageManager *imgMgr)
+	: Gtk::Window(cobject), builder(refBuilder), editorBox(nullptr), currTCG(currTCG),
+	imageManager(imgMgr) {
 		initControls();
 		connectEvents();
 	}
 
-DeckEditor *DeckEditor::create(TCG *currTCG) {
+DeckEditor *DeckEditor::create(TCG *currTCG, ImageManager *imgMgr) {
 	auto refBuilder = Gtk::Builder::create_from_file("deck_editor.glade");
 
 	DeckEditor *editor = nullptr;
 
-	refBuilder->get_widget_derived("window", editor, currTCG);
+	refBuilder->get_widget_derived("window", editor, currTCG, imgMgr);
 
 	if (!editor) {
 		throw std::runtime_error("No window in deck_editor.glade");
@@ -57,7 +60,7 @@ void DeckEditor::initControls() {
 	deckView = new Gtk::Frame("Deck");
 	initDeckViews();
 
-	cardSearch = CardSearch::create();
+	cardSearch = CardSearch::create(imageManager);
 	editorBox->pack_end(*cardSearch, false, false);
 }
 
@@ -71,7 +74,7 @@ void DeckEditor::initDeckViews() {
 		for (DeckSectionInfo info : currTCG->getSections()) {
 			Gtk::Frame *sectionFrame = new Gtk::Frame(info.getName());
 
-			CardView *sectionView = CardView::create(info.getRowCount(), info.getColCount());
+			CardView *sectionView = CardView::create(imageManager, info.getRowCount(), info.getColCount());
 			sectionFrame->add(*sectionView);
 
 			viewsBox->pack_start(*sectionFrame, false, false);

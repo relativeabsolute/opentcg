@@ -63,11 +63,11 @@ void ImageManager::loadImage(const std::string &setCode) {
 	auto search = images.find(setCode);
 	if (search == images.end()) {
 		std::string fullName = "images/" + setCode + ".png";
-		auto small = Gdk::Pixbuf::create_from_file(fullName);
+		auto small = Gdk::Pixbuf::create_from_file(fullName, smallScale, smallScale);
 		if (!small) {
 			throw std::runtime_error("Could not load image from file");
 		}
-		auto large = Gdk::Pixbuf::create_from_file(fullName);
+		auto large = Gdk::Pixbuf::create_from_file(fullName, largeScale, largeScale);
 		if (!large) {
 			throw std::runtime_error("Could not load image from file");
 		}

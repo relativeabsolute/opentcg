@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include "opentcg.hpp"
 #include "gui/card_view.hpp"
+#include "gui/card_display.hpp"
 #include "game/tcg.hpp"
 #include <vector>
 #include "util/image_manager.hpp"
@@ -52,9 +53,11 @@ namespace open_tcg {
 				void initDeckViews();
 				void connectEvents();
 
+				Gtk::Box *displayBox;
 				Gtk::Box *editorBox;
 				Gtk::Frame *deckView;
 				CardSearch *cardSearch;
+				CardDisplay *cardDisplay;
 
 				open_tcg::game::TCG *currTCG;
 				open_tcg::util::ImageManager *imageManager;

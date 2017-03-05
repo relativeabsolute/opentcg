@@ -22,42 +22,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef IMAGE_MANAGER_HPP
-#define IMAGE_MANAGER_HPP
+#ifndef CARD_DISPLAY_HPP
+#define CARD_DISPLAY_HPP
 
 #include "opentcg.hpp"
-
-#include <string>
-#include <map>
+#include "util/image_manager.hpp"
 
 namespace open_tcg {
-	namespace util {
-		const uint DEFAULT_SMALL_SCALE = 75;
-		const uint DEFAULT_LARGE_SCALE = 250;
-
-		struct ImageScale {
-			Glib::RefPtr<Gdk::Pixbuf> small;
-			Glib::RefPtr<Gdk::Pixbuf> large;
-		};
-
-		class ImageManager {
+	namespace gui {
+		class CardDisplay : public Gtk::Frame {
 			public:
-				ImageManager();
+				CardDisplay(BaseObjectType *cobject,
+						const Glib::RefPtr<Gtk::Builder> &refBuilder,
+						open_tcg::util::ImageManager *imgMgr);
 
-				void setSmallScale(uint newScale);
-				uint getSmallScale() const;
+				static CardDisplay *create(open_tcg::util::ImageManager *imgMgr);
 
-				void setLargeScale(uint newScale);
-				uint getLargeScale() const;
+			protected:
+				Glib::RefPtr<Gtk::Builder> builder;
 
-				ImageScale getImage(const std::string &name) const;
-				void loadImage(const std::string &setCode);
+				void initControls();
+				void connectEvents();
 
-				static ImageManager *create();
-			private:
-				std::map<std::string, ImageScale> images;
-				uint smallScale;
-				uint largeScale;
+				open_tcg::util::ImageManager *imageManager;
+
+				Gtk::Image *cardImage;
+				Gtk::Label *cardName;
+				Gtk::TextView *cardText;
 		};
 	}
 }

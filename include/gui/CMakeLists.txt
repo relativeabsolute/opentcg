@@ -4,4 +4,5 @@ set (HEADERS
 	${CMAKE_CURRENT_SOURCE_DIR}/deck_editor.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/card_view.hpp
 	${CMAKE_CURRENT_SOURCE_DIR}/card_search.hpp
+	${CMAKE_CURRENT_SOURCE_DIR}/card_display.hpp
 	PARENT_SCOPE)

@@ -60,8 +60,18 @@ void DeckEditor::initControls() {
 	deckView = new Gtk::Frame("Deck");
 	initDeckViews();
 
+	builder->get_widget("display_box", displayBox);
+	if (!displayBox) {
+		throw std::runtime_error("No display_box in deck_editor.glade");
+	}
+
+	cardDisplay = CardDisplay::create(imageManager);
+	displayBox->pack_start(*cardDisplay, false, false);
+
 	cardSearch = CardSearch::create(imageManager);
 	editorBox->pack_end(*cardSearch, false, false);
+
+	editorBox->pack_end(*deckView, false, false);
 }
 
 void DeckEditor::initDeckViews() {

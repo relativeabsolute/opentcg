@@ -43,6 +43,7 @@ MainWindow::MainWindow(BaseObjectType *cobject,
 MainWindow::~MainWindow() {
 	if (deckEditor) {
 		delete deckEditor;
+		deckEditor = nullptr;
 	}
 }
 
@@ -88,10 +89,17 @@ MainWindow *MainWindow::create() {
 		throw std::runtime_error("No window in main_window.glade");
 	}
 
+	// TODO: determine last game set
 	TCG ex(TCG::readFromFile("example.xml"));
 	std::cout << ex.getName() << std::endl;
 
+	window->deckEditor->setTCG(&window->currTCG);
+
 	return window;
+}
+
+void MainWindow::setTCG(const TCG &tcg) {
+	currTCG = tcg;
 }
 
 // TODO: add actual event handlers for these

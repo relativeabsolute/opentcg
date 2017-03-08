@@ -43,11 +43,19 @@ namespace open_tcg {
 
 				void setMaxSize(uint newSize);
 				uint getMaxSize() const;
+
+				void setRowCount(uint newCount);
+				uint getRowCount() const;
+
+				void setColCount(uint newCount);
+				uint getColCount() const;
 			private:
 				std::string name;
 				uint group;
 				uint maxSize;
 				uint minSize;
+				uint rows;
+				uint cols;
 		};
 	}
 }

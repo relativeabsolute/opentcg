@@ -46,6 +46,7 @@ namespace open_tcg {
 				uint getCardLimit() const;
 
 				static TCG readFromFile(const std::string &fileName);
+				DeckSections getSections() const;
 			private:
 				void readDeck(const xmlpp::Node *deckElement);
 				void readSetFile(const std::string &setFile);

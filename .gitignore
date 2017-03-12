@@ -7,3 +7,4 @@ OpenTCG
 *.swp
 *.*~
 images
+__pycache__

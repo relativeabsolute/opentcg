@@ -23,12 +23,13 @@
 # SOFTWARE.
 
 import sys
-import game
+from game import Game
 
 # goes through the files for a game and converts from
 # xml -> dictionary structures -> sqlite
 def analyze(filename):
-    game.read_game(filename)
+    g = Game()
+    g.read_game(filename)
 
 def print_usage():
     print("Usage:")

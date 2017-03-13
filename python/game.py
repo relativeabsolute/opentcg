@@ -25,40 +25,55 @@ import os
 import os.path
 
 import xmlutil
+import sqlite3
 
-# reads the given xml file into a dictionary structure
-# which will be converted into SQL
-def read_card(setfile, cardfilename):
-    print("Card = " + cardfilename)
-    card_doc = dom.parse(os.path.join(setfile, cardfilename))
-    result = {}
-    result['Name'] = xmlutil.get_element_text(card_doc, 'Name')
-    result['SetCode'] = xmlutil.get_element_text(card_doc, 'SetCode')
-    result['SetName'] = xmlutil.get_element_text(card_doc, 'SetName')
-    result['CardText'] = xmlutil.get_element_text(card_doc, 'CardText')
-    result['TypeAlias'] = xmlutil.get_element_text(card_doc, 'TypeAlias')
-    result['Parameters'] = {}
-    for param_node in card_doc.getElementsByTagName('Parameter'):
-        key_node = xmlutil.get_first_child_element(param_node)
-        val_node = xmlutil.get_first_sibling_element(key_node)
-        result['Parameters'][xmlutil.get_text(key_node)] =\
-            xmlutil.get_text(val_node)
-    print(str(result))
+class Game:
 
-# convert all the xml files found in the given set directory
-# into dictionary structures and then into SQL
-def read_set(setfilename):
-    for filename in [item for item in os.listdir(setfilename)
-        if item.endswith('.xml')]:
-        read_card(setfilename, filename)
+    # reads the given xml file into a dictionary structure
+    # which will be converted into SQL
+    def read_card(self, setfile, cardfilename):
+        print("Card = " + cardfilename)
+        card_doc = dom.parse(os.path.join(setfile, cardfilename))
+        result = {}
+        result['name'] = xmlutil.get_element_text(card_doc, 'Name')
+        result['setcode'] = xmlutil.get_element_text(card_doc, 'SetCode')
+        result['setname'] = xmlutil.get_element_text(card_doc, 'SetName')
+        result['cardtext'] = xmlutil.get_element_text(card_doc, 'CardText')
+        result['typealias'] = xmlutil.get_element_text(card_doc, 'TypeAlias')
+        result['params'] = ""
+        for param_node in card_doc.getElementsByTagName('Parameter'):
+            key_node = xmlutil.get_first_child_element(param_node)
+            val_node = xmlutil.get_first_sibling_element(key_node)
+            result['params'] += 'key=' + xmlutil.get_text(key_node) +\
+                ',val=' + xmlutil.get_text(val_node) + ';'
+        insert_statement = "INSERT INTO cards\n"
+        insert_statement += "VALUES (:name, :setcode, :setname, :cardtext"
+        insert_statement += ", :typealias, :params)"
+        self.cursor.execute(insert_statement, result)
 
-def read_game(filename):
-    document = dom.parse(filename)
-    print("Name = " + xmlutil.get_element_text(document, 'Name'))
-    setsfilename = xmlutil.get_element_text(document, 'SetFile')
-    print("Set filename = " + setsfilename)
+    # convert all the xml files found in the given set directory
+    # into dictionary structures and then into SQL
+    def read_set(self, setfilename):
+        for filename in [item for item in os.listdir(setfilename)
+            if item.endswith('.xml')]:
+            self.read_card(setfilename, filename)
 
-    # read into a list so we don't have to have multiple files open at once
-    sets = open(setsfilename).readlines()
-    for set_name in sets:
-        read_set(set_name.strip())
+    def read_game(self, filename):
+        document = dom.parse(filename)
+        setsfilename = xmlutil.get_element_text(document, 'SetFile')
+
+        create_command = "CREATE TABLE cards\n(name text, setcode text"
+        create_command += ", setname text, cardtext text, typealias text"
+        create_command += ", params text)"
+        self.cursor.execute(create_command)
+
+        # read into a list so we don't have to have multiple files open at once
+        sets = open(setsfilename).readlines()
+        for set_name in sets:
+            self.read_set(set_name.strip())
+        self.conn.commit()
+        self.conn.close()
+
+    def __init__(self):
+        self.conn = sqlite3.connect('example.db')
+        self.cursor = self.conn.cursor()

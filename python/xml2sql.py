@@ -28,7 +28,7 @@ import game
 # goes through the files for a game and converts from
 # xml -> dictionary structures -> sqlite
 def analyze(filename):
-    game.read_class(filename)
+    game.read_game(filename)
 
 def print_usage():
     print("Usage:")

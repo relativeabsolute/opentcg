@@ -26,6 +26,8 @@ import os.path
 
 import xmlutil
 
+# reads the given xml file into a dictionary structure
+# which will be converted into SQL
 def read_card(setfile, cardfilename):
     print("Card = " + cardfilename)
     card_doc = dom.parse(os.path.join(setfile, cardfilename))
@@ -34,14 +36,23 @@ def read_card(setfile, cardfilename):
     result['SetCode'] = xmlutil.get_element_text(card_doc, 'SetCode')
     result['SetName'] = xmlutil.get_element_text(card_doc, 'SetName')
     result['CardText'] = xmlutil.get_element_text(card_doc, 'CardText')
+    result['TypeAlias'] = xmlutil.get_element_text(card_doc, 'TypeAlias')
+    result['Parameters'] = {}
+    for param_node in card_doc.getElementsByTagName('Parameter'):
+        key_node = xmlutil.get_first_child_element(param_node)
+        val_node = xmlutil.get_first_sibling_element(key_node)
+        result['Parameters'][xmlutil.get_text(key_node)] =\
+            xmlutil.get_text(val_node)
     print(str(result))
 
+# convert all the xml files found in the given set directory
+# into dictionary structures and then into SQL
 def read_set(setfilename):
     for filename in [item for item in os.listdir(setfilename)
         if item.endswith('.xml')]:
         read_card(setfilename, filename)
 
-def read_class(filename):
+def read_game(filename):
     document = dom.parse(filename)
     print("Name = " + xmlutil.get_element_text(document, 'Name'))
     setsfilename = xmlutil.get_element_text(document, 'SetFile')

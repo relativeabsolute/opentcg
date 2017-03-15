@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include "opentcg.hpp"
 #include "util/image_manager.hpp"
+#include <sqlite3.h>
 
 namespace open_tcg {
 	namespace gui {
@@ -36,9 +37,11 @@ namespace open_tcg {
 			public:
 				CardSearch(BaseObjectType *cobject,
 						const Glib::RefPtr<Gtk::Builder> &refBuilder,
-						open_tcg::util::ImageManager *imgMgr);
+						open_tcg::util::ImageManager *imgMgr,
+						sqlite3 *db);
 
-				static CardSearch *create(open_tcg::util::ImageManager *imgMgr);
+				static CardSearch *create(open_tcg::util::ImageManager *imgMgr,
+					sqlite3 *db);
 
 			protected:
 				Glib::RefPtr<Gtk::Builder> builder;
@@ -57,6 +60,7 @@ namespace open_tcg {
 				CardView *cardView;
 
 				open_tcg::util::ImageManager *imageManager;
+				sqlite3 *db;
 		};
 	}
 }

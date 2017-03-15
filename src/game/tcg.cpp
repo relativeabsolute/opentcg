@@ -44,91 +44,49 @@ uint TCG::getCardLimit() const {
 	return cardLimit;
 }
 
-TCG TCG::readFromFile(const std::string &fileName) {
-	TCG result;
-
-	const std::string rootStr = "TCG";
-	const std::string nameStr = "Name";
-	const std::string cardLimitStr = "CardLimit";
-	const std::string setsStr = "SetFile";
-	const std::string deckStr = "Deck";
-
-	xmlpp::DomParser parser;
-	parser.parse_file(fileName);
-	if (parser) {
-		const auto root = parser.get_document()->get_root_node();
-		if (root->get_name().compare(rootStr) == 0) {
-			const auto name = root->get_first_child(nameStr);
-			result.name = getTextFromElement(name);
-			const auto cardLimit = root->get_first_child(cardLimitStr);
-			result.cardLimit = getUintFromElement(cardLimit);
-			const auto setsName = root->get_first_child(setsStr);
-			std::string setsFile = getTextFromElement(setsName);
-			result.readSetFile(setsFile);
-			const auto deck = root->get_first_child(deckStr);
-			result.readDeck(deck);
+// TODO: write C++ wrapper for SQLite?
+void TCG::readInfo() {
+	const char *query_stmt = "SELECT * FROM info";
+	sqlite3_stmt *res;
+	int rc = sqlite3_prepare_v2(db, query_stmt, -1, &res, nullptr);
+	if (rc == SQLITE_OK) {
+		int step = sqlite3_step(res);
+		if (step == SQLITE_ROW) {
+			name = reinterpret_cast<const char*>(sqlite3_column_text(res, 0));
+			typeDir = reinterpret_cast<const char*>(sqlite3_column_text(res, 1));
+			setNamesFile = reinterpret_cast<const char*>(sqlite3_column_text(res, 2));
+			cardLimit = (uint)sqlite3_column_int(res, 3);
 		}
 	}
+}
+
+TCG TCG::readFromDB(sqlite3 *db) {
+	TCG result;
+	result.db = db;
+
+	result.readInfo();
 
 	return result;
 }
 
-void TCG::readSetFile(const std::string &setFile) {
-	std::ifstream fileIn(setFile);
-	std::string line;
-	while (std::getline(fileIn, line)) {
-		readSet(line);
-	}
-}
-
-void TCG::readDeck(const xmlpp::Node *deckElement) {
-	const std::string subsectionStr = "Subsection";
-	for (const auto &child : deckElement->get_children(subsectionStr)) {
-		readDeckSubsection(child);
-	}
-}
-
-void TCG::readDeckSubsection(const xmlpp::Node *sectionElement) {
-	DeckSectionInfo result;
-
-	const std::string nameStr = "Name";
-	const std::string groupStr = "Group";
-	const std::string minSizeStr = "MinSize";
-	const std::string maxSizeStr = "MaxSize";
-	const std::string rowStr = "Rows";
-	const std::string colStr = "Columns";
-
-	const auto name = sectionElement->get_first_child(nameStr);
-	result.setName(getTextFromElement(name));
-
-	const auto group = sectionElement->get_first_child(groupStr);
-	result.setGroup(getUintFromElement(group));
-
-	const auto minSize = sectionElement->get_first_child(minSizeStr);
-	result.setMinSize(getUintFromElement(minSize));
-
-	const auto maxSize = sectionElement->get_first_child(maxSizeStr);
-	result.setMaxSize(getUintFromElement(maxSize));
-
-	const auto rows = sectionElement->get_first_child(rowStr);
-	result.setRowCount(getUintFromElement(rows));
-
-	const auto cols = sectionElement->get_first_child(colStr);
-	result.setColCount(getUintFromElement(cols));
-
-	sections.push_back(result);
-}
-
 DeckSections TCG::getSections() const {
-	return sections;
-}
-
-void TCG::readSet(const std::string &setName) {
-	fs::path setDir(setName);
-	if (fs::is_directory(setDir)) {
-		for (fs::directory_entry &entry : fs::directory_iterator(setDir)) {
-			CardInfo info = CardInfo::readFromFile(entry.path().string());
-			cards.insert(std::make_pair(info.getName(), info));
+	DeckSections result;
+	const char *query_stmt = "SELECT * FROM sections";
+	sqlite3_stmt *res;
+	int rc = sqlite3_prepare_v2(db, query_stmt, -1, &res, nullptr);
+	if (rc == SQLITE_OK) {
+		int step = sqlite3_step(res);
+		while (step == SQLITE_ROW) {
+			DeckSectionInfo row;
+			row.setName(reinterpret_cast<const char*>(sqlite3_column_text(res, 0)));
+			row.setGroup((uint)sqlite3_column_int(res, 1));
+			row.setMinSize((uint)sqlite3_column_int(res, 2));
+			row.setMaxSize((uint)sqlite3_column_int(res, 3));
+			row.setRowCount((uint)sqlite3_column_int(res, 4));
+			row.setColCount((uint)sqlite3_column_int(res, 5));
+			result.push_back(row);
+			step = sqlite3_step(res);
 		}
 	}
+	return result;
 }

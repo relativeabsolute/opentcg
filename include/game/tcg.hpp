@@ -33,6 +33,7 @@ SOFTWARE.
 #include "game/deck.hpp"
 #include "game/card.hpp"
 #include <libxml++/libxml++.h>
+#include <sqlite3.h>
 
 namespace open_tcg {
 	namespace game {
@@ -44,26 +45,19 @@ namespace open_tcg {
 			public:
 				std::string getName() const;
 				uint getCardLimit() const;
-
-				static TCG readFromFile(const std::string &fileName);
+					
+				static TCG readFromDB(sqlite3 *db);
 				DeckSections getSections() const;
 			private:
-				void readDeck(const xmlpp::Node *deckElement);
-				void readSetFile(const std::string &setFile);
-				void readSet(const std::string &setName);
-				void readDeckSubsection(const xmlpp::Node *sectionElement);
+				void readInfo();
 
-				std::string name;
+				std::string name, typeDir, setNamesFile;
 
 				// represents the amount of copies of a card with
 				// the same name that can be played in one deck
 				uint cardLimit;
 
-				DeckSections sections;
-
-				CardMap cards;
-
-				CardTypesMap cardTypes;
+				sqlite3 *db;
 		};
 	}
 }

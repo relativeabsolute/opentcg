@@ -28,6 +28,7 @@ SOFTWARE.
 #include "opentcg.hpp"
 #include "game/tcg.hpp"
 #include "util/image_manager.hpp"
+#include <sqlite3.h>
 
 namespace open_tcg {
 	namespace gui {
@@ -38,7 +39,7 @@ namespace open_tcg {
 				static MainWindow *create();
 				MainWindow(BaseObjectType *cobject,
 					const Glib::RefPtr<Gtk::Builder> &refBuilder,
-					const open_tcg::game::TCG &tcg);
+					const open_tcg::game::TCG &tcg, sqlite3 *db);
 
 				virtual ~MainWindow();
 			protected:
@@ -59,6 +60,7 @@ namespace open_tcg {
 
 				DeckEditor *deckEditor;
 				open_tcg::util::ImageManager *imageManager;
+				sqlite3 *db;
 		};
 	}
 }

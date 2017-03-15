@@ -31,6 +31,7 @@ SOFTWARE.
 #include "game/tcg.hpp"
 #include <vector>
 #include "util/image_manager.hpp"
+#include <sqlite3.h>
 
 namespace open_tcg {
 	namespace gui {
@@ -41,10 +42,12 @@ namespace open_tcg {
 				DeckEditor(BaseObjectType *cobject,
 					const Glib::RefPtr<Gtk::Builder> &refBuilder,
 					open_tcg::game::TCG *tcg,
-					open_tcg::util::ImageManager *imgMgr);
+					open_tcg::util::ImageManager *imgMgr,
+					sqlite3 *db);
 
 				static DeckEditor *create(open_tcg::game::TCG *tcg,
-					open_tcg::util::ImageManager *imgMgr);
+					open_tcg::util::ImageManager *imgMgr,
+					sqlite3 *db);
 
 			protected:
 				Glib::RefPtr<Gtk::Builder> builder;
@@ -63,6 +66,7 @@ namespace open_tcg {
 				open_tcg::util::ImageManager *imageManager;
 
 				std::vector<CardView*> cardViews;
+				sqlite3 *db;
 		};
 	}
 }

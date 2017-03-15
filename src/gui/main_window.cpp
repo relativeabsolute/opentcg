@@ -26,16 +26,18 @@ SOFTWARE.
 #include "gui/deck_editor.hpp"
 #include "game/tcg.hpp"
 
+#include <sqlite3.h>
+
 using namespace open_tcg::gui;
 using namespace open_tcg::game;
 using namespace open_tcg::util;
 
 MainWindow::MainWindow(BaseObjectType *cobject,
-	const Glib::RefPtr<Gtk::Builder> &refBuilder, const TCG &tcg) 
+	const Glib::RefPtr<Gtk::Builder> &refBuilder, const TCG &tcg, sqlite3 *db) 
 	: Gtk::ApplicationWindow(cobject),
 	builder(refBuilder), playButton(nullptr),
 	deckEditButton(nullptr), viewProfileButton(nullptr),
-	deckEditor(nullptr), currTCG(tcg) {
+	deckEditor(nullptr), currTCG(tcg), db(db) {
 
 	imageManager = ImageManager::create();
 
@@ -66,7 +68,7 @@ void MainWindow::initControls() {
 		throw std::runtime_error("Couldn't add view profile button.");
 	}
 
-	deckEditor = DeckEditor::create(&currTCG, imageManager);
+	deckEditor = DeckEditor::create(&currTCG, imageManager, db);
 }
 
 void MainWindow::connectEvents() {
@@ -85,12 +87,32 @@ MainWindow *MainWindow::create() {
 	auto refBuilder = Gtk::Builder::create_from_file("main_window.glade");
 
 	MainWindow *window = nullptr;
-
+	
+	sqlite3 *ex_db;
 	// TODO: determine last game set
-	TCG ex(TCG::readFromFile("example.xml"));
-	std::cout << ex.getName() << std::endl;
+	int rc = sqlite3_open("example.db", &ex_db);
+	if (rc) {
+		std::cout << "Can't open database: " << sqlite3_errmsg(ex_db);
+		sqlite3_close(ex_db);
+		return nullptr;
+	}
 
-	refBuilder->get_widget_derived("window", window, ex);
+	TCG dbEx(TCG::readFromDB(ex_db));
+	// temporary sanity check
+	/*
+	const char *query = "SELECT * FROM cards";
+	sqlite3_stmt *res;
+	rc = sqlite3_prepare_v2(ex_db, query, -1, &res, nullptr);
+	if (rc == SQLITE_OK) {
+		int step = sqlite3_step(res);
+		while (step == SQLITE_ROW) {
+			std::cout << sqlite3_column_text(res, 0) << std::endl;
+			step = sqlite3_step(res);
+		}
+	}
+	*/
+
+	refBuilder->get_widget_derived("window", window, dbEx, ex_db);
 
 	if (!window) {
 		throw std::runtime_error("No window in main_window.glade");

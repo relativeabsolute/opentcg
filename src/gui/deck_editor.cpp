@@ -30,19 +30,19 @@ using namespace open_tcg::game;
 using namespace open_tcg::util;
 
 DeckEditor::DeckEditor(BaseObjectType *cobject, const Glib::RefPtr<Gtk::Builder> &refBuilder,
-	TCG *currTCG, ImageManager *imgMgr)
+	TCG *currTCG, ImageManager *imgMgr, sqlite3 *db)
 	: Gtk::Window(cobject), builder(refBuilder), editorBox(nullptr), currTCG(currTCG),
-	imageManager(imgMgr) {
+	imageManager(imgMgr), db(db) {
 		initControls();
 		connectEvents();
 	}
 
-DeckEditor *DeckEditor::create(TCG *currTCG, ImageManager *imgMgr) {
+DeckEditor *DeckEditor::create(TCG *currTCG, ImageManager *imgMgr, sqlite3 *db) {
 	auto refBuilder = Gtk::Builder::create_from_file("deck_editor.glade");
 
 	DeckEditor *editor = nullptr;
 
-	refBuilder->get_widget_derived("window", editor, currTCG, imgMgr);
+	refBuilder->get_widget_derived("window", editor, currTCG, imgMgr, db);
 
 	if (!editor) {
 		throw std::runtime_error("No window in deck_editor.glade");
@@ -68,7 +68,7 @@ void DeckEditor::initControls() {
 	cardDisplay = CardDisplay::create(imageManager);
 	displayBox->pack_start(*cardDisplay, false, false);
 
-	cardSearch = CardSearch::create(imageManager);
+	cardSearch = CardSearch::create(imageManager, db);
 	editorBox->pack_end(*cardSearch, false, false);
 
 	editorBox->pack_end(*deckView, false, false);

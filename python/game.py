@@ -104,6 +104,10 @@ class Game:
             self.cursor.execute(insert_statement, result)
 
     def create_tables(self):
+        create_command = "CREATE TABLE info\n(name text, typedir text"
+        create_command += ", setfile text, cardlimit integer)"
+        self.cursor.execute(create_command)
+
         create_command = "CREATE TABLE cards\n(name text, setcode text"
         create_command += ", setname text, cardtext text, typealias text"
         create_command += ", params text)"
@@ -127,12 +131,23 @@ class Game:
     def read_game(self, filename):
         self.document = dom.parse(filename)
 
+        name = xmlutil.get_element_text(self.document, 'Name')
+
         card_types_filename = xmlutil.get_element_text(self.document, 'TypeDirectory')
 
         sets_filename = xmlutil.get_element_text(self.document, 'SetFile')
  
         self.create_tables()
        
+        insert_statement = "INSERT INTO info\n"
+        insert_statement += "VALUES (:name, :typedir, :setfile, :cardlimit)"
+        info_dir = {}
+        info_dir['name'] = name
+        info_dir['typedir'] = card_types_filename
+        info_dir['setfile'] = sets_filename
+        info_dir['cardlimit'] = int(xmlutil.get_element_text(self.document, 'CardLimit'))
+        self.cursor.execute(insert_statement, info_dir)
+
         self.read_types(card_types_filename)
 
         self.read_subsections()
